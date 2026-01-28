@@ -1,0 +1,203 @@
+{
+  "info": {
+    "name": "IshemaLink API",
+    "_postman_id": "ishema-1234",
+    "description": "Postman collection for testing all IshemaLink API endpoints with environment variables",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "API Root",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/",
+          "host": ["{{base_url}}"],
+          "path": ["api",""]
+        }
+      },
+      "response": [
+        {
+          "name": "Sample Response",
+          "body": "{\"name\": \"IshemaLink API\", \"version\": \"v1\", \"status_endpoint\": \"/api/status/\"}",
+          "status": "OK",
+          "code": 200
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/status/",
+          "host": ["{{base_url}}"],
+          "path": ["api","status",""]
+        }
+      },
+      "response": [
+        {
+          "name": "Sample Response",
+          "body": "{\"status\": \"running\", \"database\": \"ok\"}",
+          "status": "OK",
+          "code": 200
+        }
+      ]
+    },
+    {
+      "name": "User Registration",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type","value":"application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"phone\": \"+250788123456\",\n    \"password\": \"TestPass123\",\n    \"user_type\": \"CUSTOMER\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/register/",
+          "host": ["{{base_url}}"],
+          "path": ["api","auth","register",""]
+        }
+      }
+    },
+    {
+      "name": "Verify NID",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type","value":"application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"nid\": \"1234567890123456\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/verify-nid/",
+          "host": ["{{base_url}}"],
+          "path": ["api","auth","verify-nid",""]
+        }
+      }
+    },
+    {
+      "name": "Get Profile",
+      "request": {
+        "method": "GET",
+        "header": [{"key":"Authorization","value":"Token {{auth_token}}"}],
+        "url": {
+          "raw": "{{base_url}}/api/users/me/",
+          "host": ["{{base_url}}"],
+          "path": ["api","users","me",""]
+        }
+      }
+    },
+    {
+      "name": "Agent Onboarding",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key":"Authorization","value":"Token {{auth_token}}"},
+          {"key":"Content-Type","value":"application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"phone\": \"+250788123457\",\n    \"password\": \"AgentPass123\",\n    \"nid\": \"1234567890123456\",\n    \"assigned_sector\": \"Kicukiro/Niboye\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users/agents/onboard/",
+          "host": ["{{base_url}}"],
+          "path": ["api","users","agents","onboard",""]
+        }
+      }
+    },
+    {
+      "name": "Update Shipment Status",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key":"Authorization","value":"Token {{auth_token}}"},
+          {"key":"Content-Type","value":"application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"status\": \"IN_TRANSIT\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/shipments/1/update-status/",
+          "host": ["{{base_url}}"],
+          "path": ["api","shipments","1","update-status",""]
+        }
+      }
+    },
+    {
+      "name": "Batch Shipment Update",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key":"Authorization","value":"Token {{auth_token}}"},
+          {"key":"Content-Type","value":"application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"tracking_numbers\": [\"TRK123\", \"TRK124\", \"TRK125\"],\n    \"status\": \"IN_TRANSIT\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/shipments/batch-update/",
+          "host": ["{{base_url}}"],
+          "path": ["api","shipments","batch-update",""]
+        }
+      }
+    },
+    {
+      "name": "Get Shipment Tracking",
+      "request": {
+        "method": "GET",
+        "header": [{"key":"Authorization","value":"Token {{auth_token}}"}],
+        "url": {
+          "raw": "{{base_url}}/api/shipments/1/tracking/",
+          "host": ["{{base_url}}"],
+          "path": ["api","shipments","1","tracking",""]
+        }
+      }
+    },
+    {
+      "name": "Get Tariffs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/pricing/tariffs/",
+          "host": ["{{base_url}}"],
+          "path": ["api","pricing","tariffs",""]
+        }
+      }
+    },
+    {
+      "name": "Calculate Shipping Cost",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"destination_zone\": 2,\n    \"weight_kg\": 5\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/pricing/calculate/",
+          "host": ["{{base_url}}"],
+          "path": ["api","pricing","calculate",""]
+        }
+      }
+    },
+    {
+      "name": "Clear Tariff Cache",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Authorization","value":"Token {{auth_token}}"}],
+        "url": {
+          "raw": "{{base_url}}/api/admin/cache/clear-tariffs/",
+          "host": ["{{base_url}}"],
+          "path": ["api","admin","cache","clear-tariffs",""]
+        }
+      }
+    }
+  ]
+}
