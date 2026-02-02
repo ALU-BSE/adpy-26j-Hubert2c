@@ -1,82 +1,75 @@
 # IshemaLink API 🇷🇼
 
 IshemaLink is a logistics platform designed to digitize Rwanda’s courier ecosystem,
-connecting rural farmers, urban hubs, and cross-border trade routes across EAC.
+connecting rural farmers, urban hubs, and cross-border trade routes across the EAC.
 
 This API powers shipment tracking, pricing, user verification, and notifications.
 
----
-
 ## Features
-- Modular architecture separating Domestic & International logic
-- Rwanda-compliant KYC validation (Phone & NID)
-- Asynchronous shipment status notifications
-- Cached pricing tariffs for performance
-- Paginated shipment manifests for low-bandwidth devices
+- Modular architecture with **Domestic** and **International** logic.
+- Rwanda-compliant KYC validation (Phone & NID).
+- Async shipment status notifications.
+- Cached pricing tariffs for low-latency queries.
+- Paginated shipment manifests for low-bandwidth devices.
+- Hybrid Authentication (Session + JWT) with rate limiting.
+- Field-level encryption for sensitive data.
+- Role-based access control (RBAC) for secure operations.
 
----
+## Installation & Setup
 
-## Requirements
-- Python 3.14+
-- Django 6.0+
-- Django REST Framework
-- Redis (optional, for caching)
-- Postman (for API testing)
-
----
-
-## Quick Setup & Run Commands
-
-**Windows (PowerShell)**:
-```powershell
+1. Clone the repository:
+```bash
 git clone <your-repo-url>
-cd IshemaLink_api
+cd adpy-26j-Hubert2c
+
+
+
+2.Create and activate a virtual environment:
+
 python -m venv venv
+# Windows
 .\venv\Scripts\Activate.ps1
-pip install --upgrade pip
-pip install -r requirements.txt
-copy .env.example .env
-python manage.py migrate
-python manage.py createsuperuser  
-python manage.py runserver
-
-## for MACOS/Linux
-
-git clone <your-repo-url>
-cd IshemaLink_api
-python3 -m venv venv
+# macOS/Linux
 source venv/bin/activate
-pip install --upgrade pip
+
+
+
+3.Install dependencies:
+
 pip install -r requirements.txt
-cp .env.example .env
+
+
+
+
+4.Configure environment variables:
+
+copy .env.example .env
+# Edit .env for your settings
+
+
+
+5.Apply database migrations:
+
 python manage.py migrate
-python manage.py createsuperuser  # optional
+
+
+
+6.Run the development server:
+
 python manage.py runserver
 
 
-
-API available at: http://127.0.0.1:8000/
-
-Health check: http://127.0.0.1:8000/api/status/
-
+Visit http://127.0.0.1:8000/ to test.
 
 
 Testing the API
 
-Import Postman Collection: IshemaLink_Collection.json
+Use the provided Postman collection: IshemaLink_Collection.json.
 
-Import Environment: IshemaLink_Env.json
+All requests use pre-filled environment variables: {{base_url}} and {{auth_token}}.
 
-Set your auth_token in the environment after registering/logging in
+Check /api/status/ for system health.
 
-Test key endpoints:
-
-
-
-
-
-
-## Author
+Author
 
 Munezero Hubert
-
