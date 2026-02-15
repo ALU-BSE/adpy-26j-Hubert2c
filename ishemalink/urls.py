@@ -29,6 +29,12 @@ urlpatterns = [
     path("api/", api_root),
     path("api/status/", health_check),
     path("api/", include("core.urls")),
+    path("api/identity/", include("core.identity_urls")),
+    path("api/privacy/", include("core.privacy_urls")),
+    path("api/compliance/", include("core.compliance_urls")),
+    path("api/rbac/", include("core.rbac_urls")),
+    path("api/gov/", include("core.gov_urls")),
+    path("api/ops/", include("core.ops_urls")),
 
     # Domain apps
     path("api/domestic/", include("domestic.urls")),

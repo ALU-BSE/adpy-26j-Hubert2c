@@ -1,4 +1,5 @@
 from django.db import models
+from core.fields import EncryptedTextField
 
 class InternationalShipment(models.Model):
     DESTINATION_CHOICES = (
@@ -14,6 +15,7 @@ class InternationalShipment(models.Model):
     receiver_name = models.CharField(max_length=100)
     passport_number = models.CharField(max_length=20)
     customs_cleared = models.BooleanField(default=False)
+    tax_id = EncryptedTextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

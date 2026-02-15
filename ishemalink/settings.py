@@ -10,7 +10,13 @@ SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
 
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+
+SECURE_HSTS_SECONDS = 0 if DEBUG else 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -40,6 +46,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "core.middleware.AuditLogMiddleware",
 ]
 
 ROOT_URLCONF = "ishemalink.urls"
@@ -90,10 +97,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ✅ CUSTOM USER MODEL
 AUTH_USER_MODEL = "core.User"
 
-# DRF DEFAULTS
+# DRF DEFAULTS — hybrid: Session (web) + JWT (mobile)
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
@@ -101,6 +109,15 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend"
     ],
+    "DEFAULT_THROTTLE_RATES": {"login": "5/minute"},
+}
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "USER_ID_CLAIM": "user_id",
+    "TOKEN_OBTAIN_SERIALIZER": "core.auth_serializers.CustomTokenObtainPairSerializer",
 }
 
 # CACHE (Local memory – OK for formative)
