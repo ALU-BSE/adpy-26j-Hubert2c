@@ -1,27 +1,48 @@
-# Use official lightweight Python image
-FROM python:3.11-slim
+# ── IshemaLink Production Dockerfile ──────────────────────────────────────────
+# Base: Python 3.12 slim (minimal attack surface)
+FROM python:3.12-slim AS base
 
-# Prevent Python from writing pyc files
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
 
-# Set working directory
-WORKDIR /app
-
-# System dependencies (optional but safe)
-RUN apt-get update && apt-get install -y \
-    build-essential \
+# System dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc libpq-dev curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY requirements.txt /app/
+WORKDIR /app
+
+# ── Builder stage (compile dependencies) ──────────────────────────────────────
+FROM base AS builder
+
+COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy project files
-COPY . /app/
+# ── Production stage ──────────────────────────────────────────────────────────
+FROM base AS production
 
-# Expose Django default port
+COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Create non-root user (security hardening)
+RUN groupadd -r ishemalink && useradd -r -g ishemalink ishemalink
+
+COPY . /app
+RUN chown -R ishemalink:ishemalink /app
+
+USER ishemalink
+
 EXPOSE 8000
 
-# Run migrations and start server
-CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+# Collect static files at build time
+RUN python manage.py collectstatic --noinput || true
+
+CMD ["gunicorn", \
+     "--bind", "0.0.0.0:8000", \
+     "--workers", "4", \
+     "--worker-class", "uvicorn.workers.UvicornWorker", \
+     "--timeout", "120", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-", \
+     "ishemalink.asgi:application"]
